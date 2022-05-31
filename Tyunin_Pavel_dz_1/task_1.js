@@ -12,7 +12,7 @@ alert(Tf);
 
 let name = 'Василий';
 let admin = name;
-alert(admin)
+alert(admin);
 
 /* Чему будет равно JS-выражение 1000 + "108"?
 1000 + '108' = '1000108'.
