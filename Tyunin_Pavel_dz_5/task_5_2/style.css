@@ -1,0 +1,17 @@
+.container{
+
+}
+.items{
+  display: flex;
+  align-content: space-around;
+}
+.item{
+  width: 100px;
+  height: 50px;
+  text-align: center;
+  background-color: forestgreen;
+  border: 1px solid;
+}
+.text{
+
+}
