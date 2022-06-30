@@ -1,5 +1,6 @@
 let products = {
   'items' : {},
+  'basket' : {},
   addItem : function(id, name, cost, amount){ //метод, который добавляет предмет
     this['items'][id] = {
       'название' : name,
@@ -28,22 +29,23 @@ let products = {
       ids.push(key);
     return ids
   },
-  createBasket : function(basket, itemID){ // метод, который напонляет корзину по запросу польователя
-    if (itemID in basket){
-        basket[itemID] += 1
+  createBasket : function(itemID){ // метод, который напонляет корзину по клику на товар
+    if (itemID in this.basket){
+        this.basket[itemID] += 1
     }else{
-        basket[itemID] = 1
+        this.basket[itemID] = 1
     }
-    return basket
   },
-  getBasketCost: function(basket){ // метод, который возвращает цену корзины
-    let total_price = 0
-    for (let id of Object.keys(basket)){
+  getBasketCost: function(){ // метод, который возвращает цену корзины
+    let total_price = 0;
+    let amount = 0;
+    for (let id of Object.keys(this.basket)){
       if (id  in this['items']){
-        total_price += (this['items'][id]['цена'] * basket[id])
+        total_price += (this['items'][id]['цена'] * this.basket[id]);
+        amount += this.basket[id];
       }
     }
-    return total_price
+    return `В корзине: ${amount} товаров на сумму ${total_price} рублей`
   }
 }
 
@@ -54,20 +56,32 @@ products.addItem('004', 'Acer', 120, 8);
 
 const container = document.getElementById('container')
 const items = document.createElement('div')
+const basket = document.createElement('div')
+const text = document.createElement('p')
+
+text.classList.add('text')
+text.innerHTML = 'Клик по карточке товара, добавляет товар в корзину. Клик по корзине выводит количество и сумму товаров.'
+container.append(text)
 items.classList.add('items')
 container.append(items)
+
+basket.classList.add('basket')
+basket.innerHTML = 'Корзина пуста'
+container.append(basket)
 let ids = products.getAllIDs()
-let basket = {}
 let itemVars = []
 
 for(let i = 0; i < ids.length; i++){
   const item = document.createElement('div');
   item.classList.add('item');
-  item.id = ids[i]
-  item.innerHTML = products.items[ids[i]]['название']
-  items.append(item)
-  itemVars[i] = document.getElementById(ids[i])
+  item.id = ids[i];
+  item.innerHTML = products.items[ids[i]]['название'];
+  items.append(item);
+  itemVars[i] = document.getElementById(ids[i]);
 }
+//обработка событий для добавления товаров в корзину
 for (let i = 0; i < itemVars.length; i++){
-    itemVars[i].addEventListener('click', () => {products.createBasket(basket, itemVars[i].id)} )
+    itemVars[i].addEventListener('click', () => {products.createBasket(itemVars[i].id)});
  }
+ // обработка событий для вывода товаров в корзине
+basket.addEventListener('click', () => {basket.innerHTML=products.getBasketCost()});
